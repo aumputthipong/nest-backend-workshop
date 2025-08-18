@@ -7,13 +7,14 @@ import { PostsModule } from './posts/posts.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CalculatorController } from './calculator/calculator.controller';
 import { BooksModule } from './books/books.module';
-
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }), 
     MongooseModule.forRoot(process.env.MONGO_URI),
-    CalculatorModule, 
-    PostsModule, BooksModule
+    CalculatorModule,
+    PostsModule,
+    BooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
