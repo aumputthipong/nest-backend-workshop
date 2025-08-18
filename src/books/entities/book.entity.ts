@@ -4,4 +4,6 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 export class Book {
   @Field(() => Int, { description: 'Example field (placeholder)' })
   exampleField: number;
+  @Field(() => Int, { nullable: true })
+  date?: Date;
 }
