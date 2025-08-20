@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CalculatorController } from './calculator/calculator.controller';
 import { BooksModule } from './books/books.module';
 import { ConfigModule } from '@nestjs/config';
+import { ChatsModule } from './chats/chats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     CalculatorModule,
     PostsModule,
     BooksModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
