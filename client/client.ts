@@ -1,41 +1,39 @@
 // client/client.ts
-import { io, Socket } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-type Chat = {
-  id: number;
-  message: string;
-};
-
-const SERVER_URL = 'http://localhost:3000'; // ถ้าใช้ docker-compose แล้ว expose port 3000 ให้ใช้ localhost
-
-const socket: Socket = io(SERVER_URL, {
-  reconnectionAttempts: 5,
-  transports: ['websocket', 'polling'],
+const socket = io("http://localhost:3000", {
+  transports: ["websocket"],
 });
 
-socket.on('connect', () => {
-  console.log('connected', socket.id);
+socket.on("connect", () => {
+  console.log("Connected to server:", socket.id);
 
-  // ตัวอย่าง: emit แล้วรับ ack (server handler ที่ใช้ @SubscribeMessage จะ return เป็น ack ถ้ารับ callback)
-  socket.emit('createChat', { message: 'Hello from TS client' }, (res: any) => {
-    console.log('createChat ack:', res);
+  // 1. ทดสอบสร้าง chat
+  socket.emit("createChat", { message: "Hello from client" }, (res: any) => {
+    console.log(" createChat response:", res);
+
+    // 2. ดึงทั้งหมด
+    socket.emit("findAllChats", {}, (all: any) => {
+      console.log("findAllChats:", all);
+
+      // สมมติว่ามี id = 1
+      socket.emit("findOneChat", 1, (chat: any) => {
+        console.log("findOneChat:", chat);
+
+        // 3. อัปเดตข้อความ
+        socket.emit("updateChat", { id: 1, message: "Updated text" }, (updated: any) => {
+          console.log("updateChat:", updated);
+
+          // 4. ลบข้อความ
+          socket.emit("removeChat", 1, (deleted: any) => {
+            console.log("removeChat:", deleted);
+          });
+        });
+      });
+    });
   });
-
-  // ขอข้อมูลทั้งหมด โดยส่ง callback เพื่อรับผล
-  socket.emit('findAllChats', null, (res: Chat[]) => {
-    console.log('findAllChats:', res);
-  });
 });
 
-// รับ broadcast จาก server
-socket.on('chatCreated', (chat: Chat) => {
-  console.log('broadcast chatCreated:', chat);
-});
-
-socket.on('connect_error', (err) => {
-  console.error('connect_error', err.message);
-});
-
-socket.on('disconnect', (reason) => {
-  console.log('disconnected:', reason);
+socket.on("disconnect", () => {
+  console.log("❌ Disconnected");
 });
