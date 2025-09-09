@@ -1,4 +1,3 @@
-# docker-compose.yml
 version: '3.8'
 
 services:
@@ -9,17 +8,5 @@ services:
       - "27017:27017"
     volumes:
       - ./data:/data/db
-
-  nest:
-    build: .
-    container_name: nest-app
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    depends_on:
-      - mongo
-    command: npm run start:dev
-
-volumes:
-  mongo-data:
+    environment:
+      MONGO_INITDB_DATABASE: nestdb
