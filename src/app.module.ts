@@ -10,6 +10,7 @@ import { CalculatorController } from './calculator/calculator.controller';
 import { BooksModule } from './books/books.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ChatsModule } from './chats/chats.module';
+import { ProductsModule } from './products/products.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
@@ -24,6 +25,7 @@ import { ChatsModule } from './chats/chats.module';
     PostsModule,
     BooksModule,
     ChatsModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
