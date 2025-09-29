@@ -1,13 +1,17 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('products')
+export type ProductDocument = Product & Document;
+
+@Schema({ collection: 'products' })
 export class Product {
-    @PrimaryGeneratedColumn('uuid',{ name: 'user_id' })
-    productId: string
-    @Column({ unique: true ,})
-    productName: string;
-    @Column({default: 0})
-    price: number;
-    @Column({default: 0})
-    stock: number;
+  @Prop({ required: true, unique: true })
+  productName: string;
+
+  @Prop({ default: 0 })
+  productPrice: number;
+
+  @Prop({ default: 0 })
+  productStock: number;
 }
+export const ProductSchema = SchemaFactory.createForClass(Product);

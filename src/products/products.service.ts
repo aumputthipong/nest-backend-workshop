@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-
+import { Product, ProductDocument } from './entities/product.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectModel(Product.name) 
+    private productModel: Model<ProductDocument>,
+  ){}
+ async create(createProductDto: CreateProductDto): Promise<Product> {
+    const createdProduct = new this.productModel(createProductDto);
+    return createdProduct.save();
   }
 
-  findAll() {
-    return `This action returns all products`;
+
+async findAll(): Promise<Product[]> {
+    return this.productModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  // ดึงสินค้าเฉพาะตัวตาม id
+  async findOne(id: string): Promise<Product> {
+    return this.productModel.findById(id).exec();
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  // อัปเดตสินค้า
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    return this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  // ลบสินค้า
+  async remove(id: string): Promise<Product> {
+    return this.productModel.findByIdAndDelete(id).exec();
   }
 }
+
